@@ -20,6 +20,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import at.bitfire.cert4android.CustomCertManager;
+import it.niedermann.owncloud.notes.BuildConfig;
 import it.niedermann.owncloud.notes.model.CloudNote;
 
 public class NotesClient {
@@ -108,6 +109,7 @@ public class NotesClient {
         paramObject.accumulate(key_content, note.getContent());
         paramObject.accumulate(key_modified, note.getModified().getTimeInMillis()/1000);
         paramObject.accumulate(key_favorite, note.isFavorite());
+        paramObject.accumulate(key_category, note.getCategory());
         JSONObject json = new JSONObject(requestServer(ccm, path, method, paramObject));
         return getNoteFromJSON(json);
     }
@@ -152,6 +154,7 @@ public class NotesClient {
         con.setRequestProperty(
                 "Authorization",
                 "Basic " + Base64.encodeToString((username + ":" + password).getBytes(), Base64.NO_WRAP));
+        con.setRequestProperty("User-Agent", "nextcloud-notes/" + BuildConfig.VERSION_NAME + " (Android)");
         con.setConnectTimeout(10 * 1000); // 10 seconds
         Log.d(getClass().getSimpleName(), method + " " + targetURL);
         if (params != null) {
